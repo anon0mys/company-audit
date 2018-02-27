@@ -15,7 +15,7 @@ class TimesheetTest < Minitest::Test
   end
 
   def test_attributes
-    expected_date = Time.parse('2015-01-01')
+    expected_date = Date.new(2015, 1, 1)
 
     assert_equal 5, @timesheet.employee_id
     assert_equal Integer, @timesheet.employee_id.class

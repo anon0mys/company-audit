@@ -15,8 +15,8 @@ class ProjectTest < Minitest::Test
   end
 
   def test_attributes
-    expected_start_date = Time.parse('2015-01-01')
-    expected_end_date = Time.parse('2018-01-01')
+    expected_start_date = Date.new(2015, 1, 1)
+    expected_end_date = Date.new(2018, 1, 1)
 
     assert_equal 123, @project.id
     assert_equal Integer, @project.id.class
