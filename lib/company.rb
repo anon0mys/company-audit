@@ -1,5 +1,4 @@
 require 'csv'
-require 'pry'
 
 # A class for handling and importing csv data and managing repositories
 class Company
@@ -56,6 +55,18 @@ class Company
     data = CSV.open(filename, headers: false, header_converters: :symbol)
     data.map do |row|
       row
+    end
+  end
+
+  def find_by_employee_id(employee_id)
+    @employees.find do |employee|
+      employee.id == employee_id
+    end
+  end
+
+  def find_by_project_id(project_id)
+    @projects.find do |project|
+      project.id == project_id
     end
   end
 end

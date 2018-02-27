@@ -89,4 +89,26 @@ class CompanyTest < Minitest::Test
     assert_equal expected_success, company.status(good_data, 5)
     assert_equal expected_failure, company.status(bad_data, 5)
   end
+
+  def test_find_by_employee_id
+    filename = './data/employees.csv'
+    company = Company.new
+    company.load_employees(filename)
+    expected = 'John Smith'
+
+    assert_instance_of Employee, company.find_by_employee_id(2)
+    assert_equal expected, company.find_by_employee_id(2).name
+    assert_nil company.find_by_employee_id(10)
+  end
+
+  def test_find_by_project_id
+    filename = './data/projects.csv'
+    company = Company.new
+    company.load_projects(filename)
+    expected = 'Acme Project'
+
+    assert_instance_of Project, company.find_by_project_id(3)
+    assert_equal expected, company.find_by_project_id(3).name
+    assert_nil company.find_by_project_id(10)
+  end
 end
