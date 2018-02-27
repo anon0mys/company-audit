@@ -13,11 +13,10 @@ class Company
     @projects = []
   end
 
-  def status(data, length)
+  def status(data, expected_length)
     status_report = { success: true, errors: nil }
-    expected_length = length
     data.each do |row|
-      status_report[:errors] = 'bad data' if row.length < expected_length
+      status_report[:errors] = 'bad data' if row.length != expected_length
     end
     status_report[:success] = false unless status_report[:errors].nil?
     status_report
@@ -25,10 +24,30 @@ class Company
 
   def load_employees(filename)
     data = load_csv(filename)
-    status_report = status(data, 4)
+    status_report = status(data, 5)
     return status_report unless status_report[:success]
     data.each do |row|
       @employees << Employee.new(row[0], row[1], row[2], row[3], row[4])
+    end
+    status_report
+  end
+
+  def load_timesheets(filename)
+    data = load_csv(filename)
+    status_report = status(data, 4)
+    return status_report unless status_report[:success]
+    data.each do |row|
+      @timesheets << Timesheet.new(row[0], row[1], row[2], row[3])
+    end
+    status_report
+  end
+
+  def load_projects(filename)
+    data = load_csv(filename)
+    status_report = status(data, 4)
+    return status_report unless status_report[:success]
+    data.each do |row|
+      @projects << Project.new(row[0], row[1], row[2], row[3])
     end
     status_report
   end

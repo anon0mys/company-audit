@@ -25,13 +25,49 @@ class CompanyTest < Minitest::Test
     assert_instance_of Employee, company.employees[0]
   end
 
-  def test_it_handles_bad_data
+  def test_it_can_load_projects
+    filename = './data/projects.csv'
+    company = Company.new
+    expected = { success: true, errors: nil }
+
+    assert_equal expected, company.load_projects(filename)
+    assert_instance_of Project, company.projects[0]
+  end
+
+  def test_it_can_load_timesheets
+    filename = './data/timesheets.csv'
+    company = Company.new
+    expected = { success: true, errors: nil }
+
+    assert_equal expected, company.load_timesheets(filename)
+    assert_instance_of Timesheet, company.timesheets[0]
+  end
+
+  def test_it_handles_bad_employee_data
     filename = './data/bad_employees.csv'
     company = Company.new
     expected = { success: false, errors: 'bad data' }
 
     assert_equal expected, company.load_employees(filename)
     assert_empty company.employees
+  end
+
+  def test_it_handles_bad_timesheet_data
+    filename = './data/bad_timesheets.csv'
+    company = Company.new
+    expected = { success: false, errors: 'bad data' }
+
+    assert_equal expected, company.load_timesheets(filename)
+    assert_empty company.timesheets
+  end
+
+  def test_it_handles_bad_project_data
+    filename = './data/bad_projects.csv'
+    company = Company.new
+    expected = { success: false, errors: 'bad data' }
+
+    assert_equal expected, company.load_projects(filename)
+    assert_empty company.projects
   end
 
   def test_it_can_read_csv
@@ -50,7 +86,7 @@ class CompanyTest < Minitest::Test
     expected_success = { success: true, errors: nil }
     expected_failure = { success: false, errors: 'bad data' }
 
-    assert_equal expected_success, company.status(good_data, 4)
-    assert_equal expected_failure, company.status(bad_data, 4)
+    assert_equal expected_success, company.status(good_data, 5)
+    assert_equal expected_failure, company.status(bad_data, 5)
   end
 end
