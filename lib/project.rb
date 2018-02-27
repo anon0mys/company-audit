@@ -1,3 +1,4 @@
+# A class for handling project attributes
 class Project
   attr_reader :id,
               :name,

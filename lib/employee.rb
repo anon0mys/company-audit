@@ -1,3 +1,4 @@
+# A class for handling employee attributes
 class Employee
   attr_reader :id,
               :name,
