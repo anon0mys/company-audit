@@ -9,28 +9,39 @@ class Audit
   end
 
   def were_invalid_days_worked
-    @company.timesheets.map do |timesheet|
+    header = "```\nInvalid Days Worked:\n"
+    body = @company.timesheets.map do |timesheet|
+      data = {}
       data[:employee] = @company.find_by_employee_id(timesheet.employee_id)
       data[:project] = @company.find_by_project_id(timesheet.project_id)
-      data[:timesheet_date] = DHDate.new(timesheet.date)
-      # data[:date_in_range] = check_date(data)
+      data[:timesheet_date] = timesheet.date
+      data[:date_in_range] = check_date(data)
       report_builder(data)
-    end
+    end.uniq.compact.join("\n")
+    body = 'none' if body = ''
+    footer = "\n```"
+    header + body + footer
   end
 
   def report_builder(data)
-    header = "'''\nInvalid Days Worked:\n"
     if data[:employee].nil?
       "Invalid employee ID for work on #{data[:project].name} on"\
       " #{data[:timesheet_date]}"
     elsif data[:project].nil?
       "#{data[:employee].name} worked on invalid project on"\
       " #{data[:timesheet_date]}"
-    elsif timesheet_date.date_between(project.start_date, project.end_date)
-      "#{employee} worked on #{project} on #{timesheet_date},"\
+    elsif !data[:date_in_range]
+      "#{data[:employee].name} worked on #{data[:project].name} on"\
+      " #{data[:timesheet_date]},"\
       " which was outside project start and end dates"
     else
-      "none"
+      nil
     end
+  end
+
+  def check_date(data)
+    project = data[:project]
+    timesheet_date = DateHandler::DHDate.new(data[:timesheet_date])
+    timesheet_date.date_between(project.start_date, project.end_date)
   end
 end
