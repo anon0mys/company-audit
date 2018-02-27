@@ -25,11 +25,32 @@ class CompanyTest < Minitest::Test
     assert_instance_of Employee, company.employees[0]
   end
 
+  def test_it_handles_bad_data
+    filename = './data/bad_employees.csv'
+    company = Company.new
+    expected = { success: false, errors: 'bad data' }
+
+    assert_equal expected, company.load_employees(filename)
+    assert_empty company.employees
+  end
+
   def test_it_can_read_csv
     filename = './data/employees.csv'
     company = Company.new
-    expected = company.load_csv(filename)
+    expected = [['1', 'Susan Smith', 'Manager', '2016-01-01', '2018-02-20'],
+                ['2', 'John Smith', 'Engineer', '2016-01-01', '2018-02-20']]
 
-    assert_instance_of CSV, expected
+    assert_equal expected, company.load_csv(filename)
+  end
+
+  def test_status_method
+    company = Company.new
+    good_data = company.load_csv('./data/employees.csv')
+    bad_data = company.load_csv('./data/bad_employees.csv')
+    expected_success = { success: true, errors: nil }
+    expected_failure = { success: false, errors: 'bad data' }
+
+    assert_equal expected_success, company.status(good_data, 4)
+    assert_equal expected_failure, company.status(bad_data, 4)
   end
 end
